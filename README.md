@@ -132,5 +132,4 @@ If extended beyond PoC, the following areas would be addressed:
 ## Author
 
 Ümit Şener  
-Senior Cloud & AI Specialist  
-Dublin, Ireland
+Senior Cloud & AI Specialist
