@@ -1,58 +1,136 @@
-# 🤖 Azure Enterprise RAG Chatbot (OCR Enabled)
+# Azure Enterprise RAG Assistant (OCR-Enabled) — PoC
 
-This project is a Streamlit-based **"Ask Your Data"** chatbot that allows users to ask questions over complex PDF documents (including academic papers and tables) using a Retrieval-Augmented Generation (RAG) approach.
+This project is a forward-deployed style proof of concept (PoC) that demonstrates how large language models can be applied to enterprise PDF documents using a Retrieval-Augmented Generation (RAG) approach.
 
-The system uses a **hybrid parsing strategy**: it extracts digital text instantly using local libraries and falls back to **Azure AI Document Intelligence** for OCR only when necessary. Data is indexed into **Azure AI Search** and queried using **Azure OpenAI (GPT-4o)** with a security-aware prompt.
+The focus of this PoC is not full production scalability, but validating retrieval quality, explainability, and user experience under real-world enterprise constraints such as scanned documents, complex layouts, and hallucination risk.
 
-## 🚀 What This Application Does
+---
 
-*   **Hybrid PDF Processing:** Detects if a PDF is digital or scanned. Uses `PyMuPDF` for sub-second text extraction and falls back to `Azure AI Document Intelligence` for images.
-*   **Smart Chunking:** Uses page-based or large-window chunking to keep tables and academic contexts intact.
-*   **Vector Search:** Stores embeddings in **Azure AI Search** for semantic retrieval.
-*   **Citation & Sources:** Displays the exact source document and **page numbers** used to generate the answer.
-*   **Security Persona:** Includes a "Security Researcher" system prompt to allow analysis of sensitive academic topics (e.g., "jailbreak studies") without triggering false refusals.
-*   **Chat Interface:** Provides a conversational interface via Streamlit.
+## Problem Statement
 
-## 🏗 High-Level Architecture
+Enterprise knowledge is often stored in PDF documents that are difficult to work with using LLMs:
 
-1.  **PDF Upload:** User uploads a file via Streamlit.
-2.  **Processing:** 
-    *   *Fast Path:* Extract text via PyMuPDF.
-    *   *Slow Path:* OCR via Azure AI Document Intelligence (if text < 50 chars).
-3.  **Indexing:** Text is split into chunks and embedded using `text-embedding-ada-002`, then stored in Azure AI Search.
-4.  **Retrieval:** Top-k (`k=10`) relevant chunks are retrieved based on the user query.
-5.  **Generation:** GPT-4o generates an answer using the retrieved context.
-6.  **UI Display:** Answer + Expandable "References" section.
+- Documents may be partially or fully scanned
+- Content often includes tables, long sections, and academic formatting
+- Ungrounded LLM responses can introduce hallucination risk and reduce trust
 
-## 🛠 Tech Stack
+This PoC explores how to safely enable “ask your data” scenarios while preserving traceability, context integrity, and controlled model behaviour.
 
-*   **Python** (3.10+)
-*   **Streamlit** (UI)
-*   **Azure OpenAI** (`GPT-4o`)
-*   **Azure OpenAI Embeddings** (`text-embedding-ada-002`)
-*   **Azure AI Search** (Vector Store)
-*   **Azure AI Document Intelligence** (OCR Fallback)
-*   **PyMuPDF** (Fast Text Extraction)
-*   **LangChain** (Orchestration & Chains)
+---
 
-## 📝 Design Notes
+## What This PoC Demonstrates
 
-*   **Index Management:** Uses a fixed index name to ensure consistency between ingestion and retrieval.
-*   **Prompt Engineering:** The prompt is tuned to handle academic papers containing sensitive keywords (like "attacks" or "malware") by framing the AI as a researcher.
-*   **Reference Visibility:** The UI includes an expander to show the raw text chunks and page numbers for verification (anti-hallucination).
+- Hybrid PDF processing with a fast text extraction path and an OCR fallback
+- Context-preserving chunking to avoid breaking tables and structured content
+- Semantic retrieval using vector search
+- Grounded answer generation using retrieved context only
+- Page-level citation visibility for verification
+- Conversation-aware routing between chat and document search
+- Controlled prompt persona to handle sensitive academic topics without false refusals
 
-## ⚠️ Current Limitations
+---
 
-*   Single PDF ingestion at a time.
-*   Chat history is session-based (clears on refresh).
-*   No multi-modal support (images/graphs in PDF are not yet analyzed, only text/tables).
+## High-Level Architecture
 
-## 🔮 Future Improvements
+1. The user uploads a PDF through the Streamlit interface.
+2. The document is processed page by page:
+   - Digital text is extracted using PyMuPDF.
+   - If insufficient text is found, OCR is applied using Azure AI Document Intelligence.
+3. Extracted text is split into large overlapping chunks.
+4. Chunks are embedded using text-embedding-ada-002 and stored in Azure AI Search.
+5. User queries are classified as either conversational follow-ups or document search requests.
+6. Relevant chunks are retrieved and passed to GPT-4o for answer generation.
+7. Answers are displayed along with expandable references showing source text and page numbers.
 
-*   Support for multi-file upload.
-*   Add evaluation metrics (RAGAS or TruLens) for answer quality.
-*   Implement "Chat with Images" using GPT-4o Vision for graph analysis.
-*   Add persistent database for chat history.
+---
 
-## 👤 Author
-**Umit**
+## Technology Stack
+
+- Python 3.10+
+- Streamlit for the user interface
+- Azure OpenAI (GPT-4o)
+- Azure OpenAI Embeddings (text-embedding-ada-002)
+- Azure AI Search as the vector store
+- Azure AI Document Intelligence for OCR fallback
+- PyMuPDF for fast PDF parsing
+- LangChain for orchestration and prompt chaining
+
+---
+
+## Design Decisions and Trade-Offs
+
+### Fixed Index Strategy (V1)
+
+The PoC uses a single, fixed Azure AI Search index. New documents are appended to the same index rather than creating a new index per upload.
+
+This decision was made deliberately to:
+- Avoid routing ambiguity during conversational retrieval
+- Keep the PoC focused on retrieval quality and UX rather than index orchestration
+- Simplify demo and workshop scenarios
+
+Index versioning (V2, V3, etc.) would be introduced only for breaking changes such as schema evolution, retrieval strategy changes, or tenant isolation requirements.
+
+---
+
+### Hybrid Parsing Strategy
+
+OCR is used only when necessary to control cost and latency. A simple text-length threshold determines when OCR is triggered. This reflects a common enterprise trade-off between accuracy and performance.
+
+---
+
+### Conversation Routing
+
+A lightweight router distinguishes between:
+- Conversational follow-ups that rely on chat history
+- Questions that require document retrieval
+
+This reduces unnecessary retrieval calls and improves response relevance.
+
+---
+
+### Explainability First
+
+The PoC prioritizes transparency:
+- Source documents and page numbers are always visible
+- Raw retrieved text can be inspected
+- The system favours explainability over aggressive automation
+
+---
+
+## PoC Scope and Known Limitations
+
+This PoC intentionally does not include:
+
+- Multi-tenant isolation
+- Concurrent user handling
+- Index lifecycle automation
+- Full observability and telemetry
+- Authentication and authorization
+- Persistent chat history
+
+The system assumes:
+- A single user
+- A single active document corpus
+- Interactive demo or workshop usage
+
+---
+
+## Production-Oriented Next Steps
+
+If extended beyond PoC, the following areas would be addressed:
+
+- Service decomposition for ingestion, retrieval, and chat
+- Tenant-aware index strategies
+- Structured logging and monitoring
+- Evaluation frameworks such as RAGAS or TruLens
+- Persistent conversation storage
+- Fine-grained access control
+- Cost and latency optimisation
+
+---
+
+## Author
+
+Ümit Şener  
+Senior Cloud & AI Specialist  
+Dublin, Ireland
