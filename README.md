@@ -1,4 +1,4 @@
-# 🏢 Azure Enterprise RAG Assistant (OCR-Enabled) — PoC
+# Azure Enterprise RAG Assistant (OCR-Enabled) — PoC
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=flat&logo=python)
 ![Azure](https://img.shields.io/badge/Azure%20OpenAI-GPT--4o-0078D4?style=flat&logo=microsoftazure)
