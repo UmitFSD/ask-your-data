@@ -13,8 +13,6 @@ The focus of this PoC is not full production scalability, but validating **retri
 
 ## 📸 Interface Preview
 
-*(Upload your screenshot to an 'assets' folder and name it 'dashboard.png' to see it here, or simply drag & drop your image into the GitHub editor)*
-
 ![Dashboard Preview](assets/dashboard.png)
 
 ---
