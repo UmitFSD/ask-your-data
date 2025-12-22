@@ -13,9 +13,10 @@ The focus of this PoC is not full production scalability, but validating **retri
 
 ## 📸 Interface Preview
 
-![Dashboard Preview](assets/dashboard.png)
 
----
+
+---<img width="1167" height="689" alt="dashboard" src="https://github.com/user-attachments/assets/291c6cd7-9814-4358-9228-6298c051b848" />
+
 
 ## 🎯 Problem Statement
 
