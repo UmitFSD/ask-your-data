@@ -112,6 +112,41 @@ If extended beyond PoC, the following areas would be addressed:
 
 ---
 
+## Quick Start & How to Use
+
+Follow these steps to set up and run the project locally on your machine.
+
+### 1. Clone the Repository
+Open your terminal and clone the repo:
+```bash
+git clone https://github.com/UmitFSD/ask-your-data.git
+cd ask-your-data
+
+2. Install Dependencies
+Make sure you have Python 3.10+ installed. Then install the required libraries: pip install -r requirements.txt
+
+3. Configure Azure Credentials
+Since this project uses Azure services, you need to provide your API keys.
+Create a folder named .streamlit in the root directory.
+Inside that folder, create a file named secrets.toml.
+Paste your Azure keys into the file like this:
+
+# .streamlit/secrets.toml
+
+AZURE_OPENAI_KEY = "your-openai-key-here"
+AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/"
+
+AZURE_SEARCH_KEY = "your-search-key-here"
+AZURE_SEARCH_ENDPOINT = "https://your-search-service.search.windows.net"
+
+AZURE_DOCUMENT_INTELLIGENCE_KEY = "your-doc-intel-key-here"
+AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT = "https://your-form-recognizer.cognitiveservices.azure.com/"
+
+4. Run the Application
+Start the Streamlit app: streamlit run azure_rag.py
+
+The application will open automatically in your browser at http://localhost:8501.
+
 ## 👨‍💻 Author
 
 **Ümit Şener**  
