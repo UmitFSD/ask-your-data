@@ -112,25 +112,33 @@ If extended beyond PoC, the following areas would be addressed:
 
 ---
 
-## Quick Start & How to Use
+## 🚀 Quick Start & How to Use
 
 Follow these steps to set up and run the project locally on your machine.
 
 ### 1. Clone the Repository
 Open your terminal and clone the repo:
+
 ```bash
 git clone https://github.com/UmitFSD/ask-your-data.git
 cd ask-your-data
+```
 
-2. Install Dependencies
-Make sure you have Python 3.10+ installed. Then install the required libraries: pip install -r requirements.txt
+### 2. Install Dependencies
+Make sure you have Python 3.10+ installed. Then install the required libraries:
 
-3. Configure Azure Credentials
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure Azure Credentials
 Since this project uses Azure services, you need to provide your API keys.
-Create a folder named .streamlit in the root directory.
-Inside that folder, create a file named secrets.toml.
-Paste your Azure keys into the file like this:
 
+1.  Create a folder named `.streamlit` in the root directory.
+2.  Inside that folder, create a file named `secrets.toml`.
+3.  Paste your Azure keys into the file like this:
+
+```toml
 # .streamlit/secrets.toml
 
 AZURE_OPENAI_KEY = "your-openai-key-here"
@@ -141,13 +149,40 @@ AZURE_SEARCH_ENDPOINT = "https://your-search-service.search.windows.net"
 
 AZURE_DOCUMENT_INTELLIGENCE_KEY = "your-doc-intel-key-here"
 AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT = "https://your-form-recognizer.cognitiveservices.azure.com/"
+```
 
-4. Run the Application
-Start the Streamlit app: streamlit run azure_rag.py
+### 4. Run the Application
+Start the Streamlit app:
 
-The application will open automatically in your browser at http://localhost:8501.
+```bash
+streamlit run azure_rag.py
+```
+
+The application will open automatically in your browser at `http://localhost:8501`.
+
+
+---
+
+## 📖 Usage Guide
+
+Once the application is running, follow these steps to interact with your data:
+
+### 1. Ingest Data
+1.  Open the **Data Ingestion** sidebar on the left.
+2.  Drag and drop your PDF document (e.g., a financial report, academic paper).
+3.  Click the **"Analyze & Index Document"** button.
+4.  Wait for the **"✅ Indexing Complete!"** message.
+
+### 2. Chat with your Document
+You can now ask questions in the chat input box. The system handles context-aware follow-ups and multilingual queries.
+
+### 🧩 Example Questions to Try
+*   **Summarization:** _"Summarize the executive summary and key findings."_
+*   **Specific Data:** _"What are the risk factors mentioned in page 5?"_
+*   **Table Analysis:** _"Interpret the numbers in Table 3."_
+*   **Multilingual:** _"Bu dökümandaki ana riskler nelerdir?"_ (Turkish)
+
 
 ## 👨‍💻 Author
-
 **Ümit Şener**  
 Senior Cloud & AI Specialist
